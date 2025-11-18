@@ -1,0 +1,15 @@
+com\cliente\projeto\crudpb\controller\EventoController.class
+com\cliente\projeto\crudpb\repository\EventoRepository.class
+com\cliente\projeto\crudpb\CrudPbApplication.class
+com\cliente\projeto\crudpb\dto\ErroDTO.class
+com\cliente\projeto\crudpb\dto\UsuarioDTO.class
+com\cliente\projeto\crudpb\model\Usuario.class
+com\cliente\projeto\crudpb\controller\UsuarioController.class
+com\cliente\projeto\crudpb\dto\EventoDTO.class
+com\cliente\projeto\crudpb\model\Evento.class
+com\cliente\projeto\crudpb\exception\RecursoNaoEncontradoException.class
+com\cliente\projeto\crudpb\exception\GlobalExceptionHandler.class
+com\cliente\projeto\crudpb\service\UsuarioService.class
+com\cliente\projeto\crudpb\exception\ValidacaoException.class
+com\cliente\projeto\crudpb\repository\UsuarioRepository.class
+com\cliente\projeto\crudpb\service\EventoService.class

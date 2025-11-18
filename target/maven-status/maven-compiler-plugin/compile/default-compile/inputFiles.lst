@@ -1,0 +1,15 @@
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\controller\EventoController.java
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\controller\UsuarioController.java
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\CrudPbApplication.java
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\dto\ErroDTO.java
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\dto\EventoDTO.java
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\dto\UsuarioDTO.java
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\exception\GlobalExceptionHandler.java
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\exception\RecursoNaoEncontradoException.java
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\exception\ValidacaoException.java
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\model\Evento.java
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\model\Usuario.java
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\repository\EventoRepository.java
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\repository\UsuarioRepository.java
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\service\EventoService.java
+E:\Downloads\TP3_CODIGO-20251116T212412Z-1-001\com-cliente-projeto\src\main\java\com\cliente\projeto\crudpb\service\UsuarioService.java

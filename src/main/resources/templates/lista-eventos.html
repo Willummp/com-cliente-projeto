@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/_header :: header-css}"></th:block>
+</head>
+<body>
+
+    <nav th:replace="~{fragments/_header :: navbar}"></nav>
+
+    <div class="container">
+        <h2>Gerenciamento de Eventos</h2>
+
+        <div th:if="${mensagemSucesso}" class="alert alert-success" th:text="${mensagemSucesso}"></div>
+
+        <a th:href="@{/eventos/novo}" class="btn btn-primary mb-3">Novo Evento</a>
+
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th>Criador (Usuário)</th>
+                    <th style="width: 180px;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="evento : ${eventos}">
+                    <td th:text="${evento.id}">1</td>
+                    <td th:text="${evento.nome}">Nome do Evento</td>
+                    <td th:text="${evento.descricao}">Descrição</td>
+                    <td th:text="${evento.usuario?.nome}">Nome do Criador</td>
+                    <td>
+                        <a th:href="@{/eventos/editar/{id}(id=${evento.id})}" class="btn btn-warning btn-sm">Editar</a>
+                        <a th:href="@{/eventos/deletar/{id}(id=${evento.id})}" class="btn btn-danger btn-sm"
+                           onclick="return confirm('Tem certeza que deseja deletar este evento?');">Deletar</a>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(eventos)}">
+                    <td colspan="5" class="text-center">Nenhum evento cadastrado.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <footer th:replace="~{fragments/_footer :: footer-scripts}"></footer>
+
+</body>
+</html>

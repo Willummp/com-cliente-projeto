@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">com-cliente-projeto</a> &gt; <a href="index.source.html" class="el_package">com.cliente.projeto.crudpb.service</a> &gt; <span class="el_source">UsuarioService.java</span></div><h1>UsuarioService.java</h1><pre class="source lang-java linenums">package com.cliente.projeto.crudpb.service;
+
+import com.cliente.projeto.crudpb.exception.RecursoNaoEncontradoException;
+import com.cliente.projeto.crudpb.exception.ValidacaoException;
+import com.cliente.projeto.crudpb.model.Usuario;
+import com.cliente.projeto.crudpb.repository.UsuarioRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class UsuarioService {
+
+    private final UsuarioRepository usuarioRepository;
+
+    // Injeção de Dependência via Construtor (Clean Code)
+<span class="fc" id="L18">    public UsuarioService(UsuarioRepository usuarioRepository) {</span>
+<span class="fc" id="L19">        this.usuarioRepository = usuarioRepository;</span>
+<span class="fc" id="L20">    }</span>
+
+    public List&lt;Usuario&gt; listarTodos() {
+<span class="nc" id="L23">        return usuarioRepository.findAll();</span>
+    }
+
+    public Usuario buscarPorId(Long id) {
+<span class="fc" id="L27">        return usuarioRepository.findById(id)</span>
+<span class="pc" id="L28">                .orElseThrow(() -&gt; new RecursoNaoEncontradoException(&quot;Usuário não encontrado com ID: &quot; + id));</span>
+    }
+
+    public Usuario criarUsuario(Usuario usuario) {
+        // Regra de negócio (não pode ter e-mail duplicado)
+<span class="nc" id="L33">        validarEmailDuplicado(usuario.getEmail(), null);</span>
+<span class="nc" id="L34">        return usuarioRepository.save(usuario);</span>
+    }
+
+    public Usuario atualizarUsuario(Long id, Usuario usuarioAtualizado) {
+        // Busca o usuário (ou falha com 404)
+<span class="fc" id="L39">        Usuario usuarioExistente = buscarPorId(id);</span>
+
+        // Validação de e-mail duplicado (ignorando o próprio ID)
+<span class="fc" id="L42">        validarEmailDuplicado(usuarioAtualizado.getEmail(), id);</span>
+
+        // Atualiza os dados
+<span class="fc" id="L45">        usuarioExistente.setNome(usuarioAtualizado.getNome());</span>
+<span class="fc" id="L46">        usuarioExistente.setEmail(usuarioAtualizado.getEmail());</span>
+
+<span class="fc" id="L48">        return usuarioRepository.save(usuarioExistente);</span>
+    }
+
+    public void deletarUsuario(Long id) {
+        // Verifica se existe antes de deletar (ou falha com 404)
+<span class="nc" id="L53">        Usuario usuarioParaDeletar = buscarPorId(id);</span>
+<span class="nc" id="L54">        usuarioRepository.delete(usuarioParaDeletar);</span>
+<span class="nc" id="L55">    }</span>
+
+    // Método de validação privado (Clean Code)
+    private void validarEmailDuplicado(String email, Long idExcecao) {
+<span class="fc" id="L59">        Optional&lt;Usuario&gt; conflito = usuarioRepository.findByEmail(email);</span>
+
+        // Se encontrou um usuário com o mesmo e-mail E
+        // (se o ID desse usuário for diferente do ID que estamos atualizando)
+<span class="pc bpc" id="L63" title="1 of 6 branches missed.">        if (conflito.isPresent() &amp;&amp; (idExcecao == null || !conflito.get().getId().equals(idExcecao))) {</span>
+<span class="fc" id="L64">            throw new ValidacaoException(&quot;O e-mail '&quot; + email + &quot;' já está em uso por outro usuário.&quot;);</span>
+        }
+<span class="fc" id="L66">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

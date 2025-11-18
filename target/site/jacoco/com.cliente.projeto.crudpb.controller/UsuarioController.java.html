@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">com-cliente-projeto</a> &gt; <a href="index.source.html" class="el_package">com.cliente.projeto.crudpb.controller</a> &gt; <span class="el_source">UsuarioController.java</span></div><h1>UsuarioController.java</h1><pre class="source lang-java linenums">package com.cliente.projeto.crudpb.controller;
+
+import com.cliente.projeto.crudpb.dto.UsuarioDTO;
+import com.cliente.projeto.crudpb.exception.ValidacaoException;
+import com.cliente.projeto.crudpb.model.Usuario;
+import com.cliente.projeto.crudpb.service.UsuarioService;
+import jakarta.validation.Valid;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+@Controller
+@RequestMapping(&quot;/usuarios&quot;) // Novo endpoint: /usuarios
+public class UsuarioController {
+
+    private final UsuarioService usuarioService;
+
+    // Injeção via construtor
+<span class="fc" id="L21">    public UsuarioController(UsuarioService usuarioService) {</span>
+<span class="fc" id="L22">        this.usuarioService = usuarioService;</span>
+<span class="fc" id="L23">    }</span>
+
+    // READ (Listagem)
+    @GetMapping
+    public String listarUsuarios(Model model) {
+<span class="nc" id="L28">        model.addAttribute(&quot;usuarios&quot;, usuarioService.listarTodos());</span>
+<span class="nc" id="L29">        return &quot;lista-usuarios&quot;; // Novo HTML: 'lista-usuarios.html'</span>
+    }
+
+    // CREATE (Mostrar formulário)
+    @GetMapping(&quot;/novo&quot;)
+    public String mostrarFormularioNovo(Model model) {
+<span class="nc" id="L35">        model.addAttribute(&quot;usuarioDTO&quot;, new UsuarioDTO(&quot;&quot;, &quot;&quot;));</span>
+<span class="nc" id="L36">        model.addAttribute(&quot;pageTitle&quot;, &quot;Novo Usuário&quot;);</span>
+<span class="nc" id="L37">        return &quot;form-usuario&quot;; // Novo HTML: 'form-usuario.html'</span>
+    }
+
+    // CREATE (Salvar)
+    @PostMapping
+    public String salvarUsuario(@Valid @ModelAttribute(&quot;usuarioDTO&quot;) UsuarioDTO usuarioDTO,
+                                  BindingResult bindingResult,
+                                  Model model,
+                                  RedirectAttributes redirectAttributes) {
+
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        if (bindingResult.hasErrors()) {</span>
+<span class="nc" id="L48">            model.addAttribute(&quot;pageTitle&quot;, &quot;Novo Usuário&quot;);</span>
+<span class="nc" id="L49">            return &quot;form-usuario&quot;;</span>
+        }
+
+        try {
+<span class="nc" id="L53">            usuarioService.criarUsuario(usuarioDTO.toEntity());</span>
+<span class="nc" id="L54">            redirectAttributes.addFlashAttribute(&quot;mensagemSucesso&quot;, &quot;Usuário criado com sucesso!&quot;);</span>
+<span class="nc" id="L55">            return &quot;redirect:/usuarios&quot;;</span>
+
+<span class="nc" id="L57">        } catch (ValidacaoException ex) {</span>
+<span class="nc" id="L58">            model.addAttribute(&quot;pageTitle&quot;, &quot;Novo Usuário&quot;);</span>
+<span class="nc" id="L59">            model.addAttribute(&quot;mensagemErro&quot;, ex.getMessage());</span>
+<span class="nc" id="L60">            return &quot;form-usuario&quot;;</span>
+        }
+    }
+
+    // UPDATE (Mostrar formulário de edição)
+    @GetMapping(&quot;/editar/{id}&quot;)
+    public String mostrarFormularioEditar(@PathVariable Long id, Model model) {
+<span class="nc" id="L67">        Usuario usuario = usuarioService.buscarPorId(id); // Já lida com 404</span>
+<span class="nc" id="L68">        UsuarioDTO dto = new UsuarioDTO(usuario.getNome(), usuario.getEmail());</span>
+
+<span class="nc" id="L70">        model.addAttribute(&quot;usuarioDTO&quot;, dto);</span>
+<span class="nc" id="L71">        model.addAttribute(&quot;usuarioId&quot;, id);</span>
+<span class="nc" id="L72">        model.addAttribute(&quot;pageTitle&quot;, &quot;Editar Usuário&quot;);</span>
+<span class="nc" id="L73">        return &quot;form-usuario&quot;;</span>
+    }
+
+    // UPDATE (Atualizar)
+    @PostMapping(&quot;/{id}&quot;)
+    public String atualizarUsuario(@PathVariable Long id,
+                                     @Valid @ModelAttribute(&quot;usuarioDTO&quot;) UsuarioDTO usuarioDTO,
+                                     BindingResult bindingResult,
+                                     Model model,
+                                     RedirectAttributes redirectAttributes) {
+
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (bindingResult.hasErrors()) {</span>
+<span class="nc" id="L85">            model.addAttribute(&quot;pageTitle&quot;, &quot;Editar Usuário&quot;);</span>
+<span class="nc" id="L86">            model.addAttribute(&quot;usuarioId&quot;, id);</span>
+<span class="nc" id="L87">            return &quot;form-usuario&quot;;</span>
+        }
+
+        try {
+<span class="nc" id="L91">            usuarioService.atualizarUsuario(id, usuarioDTO.toEntity());</span>
+<span class="nc" id="L92">            redirectAttributes.addFlashAttribute(&quot;mensagemSucesso&quot;, &quot;Usuário atualizado com sucesso!&quot;);</span>
+<span class="nc" id="L93">            return &quot;redirect:/usuarios&quot;;</span>
+
+<span class="nc" id="L95">        } catch (ValidacaoException ex) {</span>
+<span class="nc" id="L96">            model.addAttribute(&quot;pageTitle&quot;, &quot;Editar Usuário&quot;);</span>
+<span class="nc" id="L97">            model.addAttribute(&quot;usuarioId&quot;, id);</span>
+<span class="nc" id="L98">            model.addAttribute(&quot;mensagemErro&quot;, ex.getMessage());</span>
+<span class="nc" id="L99">            return &quot;form-usuario&quot;;</span>
+        }
+    }
+
+    // DELETE
+    @GetMapping(&quot;/deletar/{id}&quot;)
+    public String deletarUsuario(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+<span class="nc" id="L106">        usuarioService.deletarUsuario(id);</span>
+<span class="nc" id="L107">        redirectAttributes.addFlashAttribute(&quot;mensagemSucesso&quot;, &quot;Usuário deletado com sucesso!&quot;);</span>
+<span class="nc" id="L108">        return &quot;redirect:/usuarios&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

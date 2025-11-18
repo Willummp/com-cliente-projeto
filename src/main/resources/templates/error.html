@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/_header :: header-css}"></head>
+<body>
+<nav th:replace="~{fragments/_header :: navbar}"></nav>
+
+<main class="container text-center">
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <h1 class="display-4 text-danger">Ops! Algo deu errado.</h1>
+        <p class="lead">
+            Ocorreu um erro inesperado. Nossa equipe já foi notificada.
+            </a:p>
+        <hr class="my-4">
+
+        <p>Detalhe: <strong th:text="${message} ?: 'Erro não especificado.'"></strong></p>
+        <p th:if="${correlationId}">ID da Falha: <code th:text="${correlationId}"></code></p>
+
+        <a class="btn btn-primary btn-lg" th:href="@{/eventos}" role="button">Voltar para a Página Inicial</a>
+    </div>
+</main>
+
+<div th:replace="~{fragments/_footer :: footer-scripts}"></div>
+</body>
+</html>

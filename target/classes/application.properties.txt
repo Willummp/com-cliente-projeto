@@ -1,0 +1,12 @@
+# Configuração do Banco de Dados PostgreSQL
+spring.datasource.url=jdbc:postgresql://localhost:5432/bd
+spring.datasource.username=admin
+spring.datasource.password=7922
+
+# Configuração do JPA
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# Configuração do Thymeleaf
+spring.thymeleaf.cache=false

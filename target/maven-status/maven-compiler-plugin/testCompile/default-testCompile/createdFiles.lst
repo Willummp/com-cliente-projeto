@@ -1,0 +1,6 @@
+com\cliente\projeto\crudpb\e2e\pageobjects\CadastroEventoE2ETest.class
+com\cliente\projeto\crudpb\service\EventoServiceTest.class
+com\cliente\projeto\crudpb\service\UsuarioServiceTest.class
+com\cliente\projeto\crudpb\CrudPbApplicationTests.class
+com\cliente\projeto\crudpb\controller\EventoControllerIntegrationTest.class
+com\cliente\projeto\crudpb\e2e\pageobjects\FormularioEventoPage.class

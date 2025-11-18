@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{fragments/_header :: header-css}"></th:block>
+</head>
+<body>
+
+    <nav th:replace="~{fragments/_header :: navbar}"></nav>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 th:text="${pageTitle}">Formulário de Usuário</h2>
+
+                <div th:if="${mensagemErro}" class="alert alert-danger" th:text="${mensagemErro}"></div>
+
+                <form th:action="${usuarioId != null} ? @{/usuarios/{id}(id=${usuarioId})} : @{/usuarios}"
+                      th:object="${usuarioDTO}"
+                      method="post">
+
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome:</label>
+                        <input type="text" id="nome" th:field="*{nome}" class="form-control" />
+                        <div th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-danger"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail:</label>
+                        <input type="email" id="email" th:field="*{email}" class="form-control" />
+                        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <a th:href="@{/usuarios}" class="btn btn-secondary">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/_footer :: footer-scripts}"></footer>
+
+</body>
+</html>

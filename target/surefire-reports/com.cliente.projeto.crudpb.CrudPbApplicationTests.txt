@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.cliente.projeto.crudpb.CrudPbApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.981 s -- in com.cliente.projeto.crudpb.CrudPbApplicationTests
