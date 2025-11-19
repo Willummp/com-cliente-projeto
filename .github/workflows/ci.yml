@@ -12,6 +12,10 @@ jobs:
   security-build-test:
     name: 🛡️ Segurança e Qualidade
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
     
     steps:
       - name: Checkout do Código
@@ -24,12 +28,20 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: 🕵️‍♂️ Análise de Segurança (OWASP Dependency Check)
-        continue-on-error: true
-        run: mvn org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=11
+      # --- INÍCIO SEGURANÇA (CODEQL) ---
+      - name: 🛡️ Inicializar CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: java
 
       - name: 🏗️ Build e Testes Unitários
         run: mvn clean verify
+      
+      # Finaliza a análise de segurança
+      - name: 🕵️‍♂️ Realizar Análise CodeQL
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:java"
       
       - name: 📝 Gerar Log de Testes
         if: always()
@@ -56,7 +68,7 @@ jobs:
         run: |
           echo "### 🚀 Resultado do Build" >> $GITHUB_STEP_SUMMARY
           echo "✅ Testes executados com sucesso" >> $GITHUB_STEP_SUMMARY
-          echo "🛡️ Análise de segurança concluída (Tentativa)" >> $GITHUB_STEP_SUMMARY
+          echo "🛡️ Análise CodeQL concluída com sucesso" >> $GITHUB_STEP_SUMMARY
           echo "📦 Artefatos arquivados" >> $GITHUB_STEP_SUMMARY
 
   # JOB 2: Deploy em Homologação
