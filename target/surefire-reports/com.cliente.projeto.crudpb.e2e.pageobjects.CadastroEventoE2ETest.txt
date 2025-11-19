@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.cliente.projeto.crudpb.e2e.pageobjects.CadastroEventoE2ETest
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0 s -- in com.cliente.projeto.crudpb.e2e.pageobjects.CadastroEventoE2ETest
