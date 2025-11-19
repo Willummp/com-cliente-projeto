@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-<span class="nc" id="L8">public record UsuarioDTO(</span>
+<span class="fc" id="L8">public record UsuarioDTO(</span>
         @NotBlank(message = &quot;O nome é obrigatório.&quot;)
         @Size(min = 3, max = 100, message = &quot;O nome deve ter entre 3 e 100 caracteres.&quot;)
         String nome,
@@ -16,7 +16,7 @@ import jakarta.validation.constraints.Size;
 ) {
     // Método utilitário para converter o DTO em Entidade
     public Usuario toEntity() {
-<span class="nc" id="L19">        return new Usuario(this.nome, this.email);</span>
+<span class="fc" id="L19">        return new Usuario(this.nome, this.email);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

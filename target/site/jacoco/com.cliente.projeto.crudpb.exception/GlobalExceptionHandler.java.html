@@ -22,38 +22,38 @@ import java.util.stream.Collectors;
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity&lt;ErroDTO&gt; handleValidationErrors(MethodArgumentNotValidException ex, HttpServletRequest request) {
         // Coleta todas as mensagens de erro dos campos
-<span class="nc" id="L25">        String mensagem = ex.getBindingResult().getFieldErrors().stream()</span>
-<span class="nc" id="L26">                .map(error -&gt; error.getField() + &quot;: &quot; + error.getDefaultMessage())</span>
-<span class="nc" id="L27">                .collect(Collectors.joining(&quot;, &quot;));</span>
+<span class="fc" id="L25">        String mensagem = ex.getBindingResult().getFieldErrors().stream()</span>
+<span class="fc" id="L26">                .map(error -&gt; error.getField() + &quot;: &quot; + error.getDefaultMessage())</span>
+<span class="fc" id="L27">                .collect(Collectors.joining(&quot;, &quot;));</span>
 
-<span class="nc" id="L29">        log.warn(&quot;Erro de validação na rota {}: {}&quot;, request.getRequestURI(), mensagem);</span>
+<span class="fc" id="L29">        log.warn(&quot;Erro de validação na rota {}: {}&quot;, request.getRequestURI(), mensagem);</span>
 
-<span class="nc" id="L31">        ErroDTO erro = new ErroDTO(</span>
-<span class="nc" id="L32">                Instant.now().toString(),</span>
-<span class="nc" id="L33">                HttpStatus.BAD_REQUEST.value(),</span>
+<span class="fc" id="L31">        ErroDTO erro = new ErroDTO(</span>
+<span class="fc" id="L32">                Instant.now().toString(),</span>
+<span class="fc" id="L33">                HttpStatus.BAD_REQUEST.value(),</span>
                 &quot;Erro de Validação&quot;,
                 mensagem,
-<span class="nc" id="L36">                request.getRequestURI()</span>
+<span class="fc" id="L36">                request.getRequestURI()</span>
         );
-<span class="nc" id="L38">        return new ResponseEntity&lt;&gt;(erro, HttpStatus.BAD_REQUEST);</span>
+<span class="fc" id="L38">        return new ResponseEntity&lt;&gt;(erro, HttpStatus.BAD_REQUEST);</span>
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity&lt;ErroDTO&gt; handleGenericException(Exception ex, HttpServletRequest request) {
-<span class="nc" id="L43">        String correlationId = UUID.randomUUID().toString();</span>
+<span class="fc" id="L43">        String correlationId = UUID.randomUUID().toString();</span>
 
-<span class="nc" id="L45">        log.error(&quot;Erro inesperado [ID: {}] na rota {}: {}&quot;, correlationId, request.getRequestURI(), ex.getMessage(), ex);</span>
+<span class="fc" id="L45">        log.error(&quot;Erro inesperado [ID: {}] na rota {}: {}&quot;, correlationId, request.getRequestURI(), ex.getMessage(), ex);</span>
 
-<span class="nc" id="L47">        String mensagemSegura = &quot;Ocorreu um erro inesperado no sistema. Por favor, tente novamente. ID da falha: &quot; + correlationId;</span>
+<span class="fc" id="L47">        String mensagemSegura = &quot;Ocorreu um erro inesperado no sistema. Por favor, tente novamente. ID da falha: &quot; + correlationId;</span>
 
-<span class="nc" id="L49">        ErroDTO erro = new ErroDTO(</span>
-<span class="nc" id="L50">                Instant.now().toString(),</span>
-<span class="nc" id="L51">                HttpStatus.INTERNAL_SERVER_ERROR.value(),</span>
+<span class="fc" id="L49">        ErroDTO erro = new ErroDTO(</span>
+<span class="fc" id="L50">                Instant.now().toString(),</span>
+<span class="fc" id="L51">                HttpStatus.INTERNAL_SERVER_ERROR.value(),</span>
                 &quot;Erro Interno&quot;,
                 mensagemSegura,
-<span class="nc" id="L54">                request.getRequestURI()</span>
+<span class="fc" id="L54">                request.getRequestURI()</span>
         );
-<span class="nc" id="L56">        return new ResponseEntity&lt;&gt;(erro, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L56">        return new ResponseEntity&lt;&gt;(erro, HttpStatus.INTERNAL_SERVER_ERROR);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

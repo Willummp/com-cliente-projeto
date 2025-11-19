@@ -6,69 +6,96 @@ import com.cliente.projeto.crudpb.model.Evento;
 import com.cliente.projeto.crudpb.model.Usuario;
 import com.cliente.projeto.crudpb.repository.EventoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class EventoService {
+
     private final EventoRepository eventoRepository;
     private final UsuarioService usuarioService;
 
-<span class="fc" id="L18">    public EventoService(EventoRepository eventoRepository, UsuarioService usuarioService) {</span>
-<span class="fc" id="L19">        this.eventoRepository = eventoRepository;</span>
-<span class="fc" id="L20">        this.usuarioService = usuarioService; </span>
-<span class="fc" id="L21">    }</span>
+<span class="fc" id="L20">    public EventoService(EventoRepository eventoRepository, UsuarioService usuarioService) {</span>
+<span class="fc" id="L21">        this.eventoRepository = eventoRepository;</span>
+<span class="fc" id="L22">        this.usuarioService = usuarioService;</span>
+<span class="fc" id="L23">    }</span>
 
+    /*
+     * TP5 - Requisito 1: Refatoração e Organização do Código
+     * &quot;Aplicar o Princípio da Imutabilidade, separando consultas de modificadores...&quot;
+     * @Transactional(readOnly = true) garante otimização de performance para leituras.
+     */
+    @Transactional(readOnly = true)
     public List&lt;Evento&gt; listarTodos() {
-<span class="nc" id="L24">        return eventoRepository.findAll();</span>
+<span class="fc" id="L32">        return eventoRepository.findAll();</span>
     }
 
+    @Transactional(readOnly = true)
     public Evento buscarPorId(Long id) {
-<span class="nc" id="L28">        return eventoRepository.findById(id)</span>
-<span class="nc" id="L29">                .orElseThrow(() -&gt; new RecursoNaoEncontradoException(&quot;Evento não encontrado com ID: &quot; + id));</span>
+<span class="fc" id="L37">        return eventoRepository.findById(id)</span>
+<span class="pc" id="L38">                .orElseThrow(() -&gt; new RecursoNaoEncontradoException(&quot;Evento não encontrado com ID: &quot; + id));</span>
     }
 
+    /*
+     * TP5 - Requisito 1: Refatoração e Organização do Código
+     * &quot;Simplificar condicionais complexas, substituindo por cláusulas de guarda...&quot;
+     * A validação foi movida para o início (fail-fast) antes de processar a lógica.
+     */
+    @Transactional
     public Evento criarEvento(Evento evento, Long usuarioId) {
-        // 1. Validação de regra de negócio (nome duplicado)
-<span class="fc" id="L34">        validarNomeDuplicado(evento.getNome(), null);</span>
+        // Cláusula de Guarda: Valida regra de negócio antes de prosseguir
+<span class="fc" id="L49">        validarNomeDuplicado(evento.getNome(), null);</span>
 
-        // 2. Busca e associa o usuário (Integração)
-<span class="fc" id="L37">        Usuario criador = usuarioService.buscarPorId(usuarioId);</span>
-<span class="fc" id="L38">        evento.setUsuario(criador);</span>
+        // TP5 - Requisito 1: &quot;Reorganizar métodos... eliminando redundâncias&quot;
+        // Reutilização do serviço de usuário centralizado
+<span class="fc" id="L53">        Usuario criador = usuarioService.buscarPorId(usuarioId);</span>
+<span class="fc" id="L54">        evento.setUsuario(criador);</span>
 
-        // 3. Salva o evento
-<span class="fc" id="L41">        return eventoRepository.save(evento);</span>
+<span class="fc" id="L56">        return eventoRepository.save(evento);</span>
     }
 
+    @Transactional
     public Evento atualizarEvento(Long id, Evento eventoAtualizado, Long usuarioId) {
-        // 1. Busca o evento (ou falha com 404)
-<span class="nc" id="L46">        Evento eventoExistente = buscarPorId(id);</span>
+        // Cláusula de Guarda
+<span class="fc" id="L62">        validarNomeDuplicado(eventoAtualizado.getNome(), id);</span>
 
-        // 2. Validação de nome duplicado (ignorando o próprio ID)
-<span class="nc" id="L49">        validarNomeDuplicado(eventoAtualizado.getNome(), id);</span>
-        
-        // 3. Busca e associa o novo usuário (ou o mesmo)
-<span class="nc" id="L52">        Usuario criador = usuarioService.buscarPorId(usuarioId);</span>
-<span class="nc" id="L53">        eventoExistente.setUsuario(criador);</span>
+<span class="fc" id="L64">        Evento eventoExistente = buscarPorId(id);</span>
+<span class="fc" id="L65">        Usuario criador = usuarioService.buscarPorId(usuarioId);</span>
 
-        // 4. Atualiza os dados
-<span class="nc" id="L56">        eventoExistente.setNome(eventoAtualizado.getNome());</span>
-<span class="nc" id="L57">        eventoExistente.setDescricao(eventoAtualizado.getDescricao());</span>
+        // TP5 - Requisito 1: &quot;Garantir modularidade e coesão&quot;
+        // Atualização explícita mantendo a consistência da entidade gerenciada
+<span class="fc" id="L69">        eventoExistente.setUsuario(criador);</span>
+<span class="fc" id="L70">        eventoExistente.setNome(eventoAtualizado.getNome());</span>
+<span class="fc" id="L71">        eventoExistente.setDescricao(eventoAtualizado.getDescricao());</span>
 
-<span class="nc" id="L59">        return eventoRepository.save(eventoExistente);</span>
+<span class="fc" id="L73">        return eventoRepository.save(eventoExistente);</span>
     }
 
+    @Transactional
     public void deletarEvento(Long id) {
-<span class="nc" id="L63">        Evento eventoParaDeletar = buscarPorId(id);</span>
-<span class="nc" id="L64">        eventoRepository.delete(eventoParaDeletar);</span>
-<span class="nc" id="L65">    }</span>
-    
-    private void validarNomeDuplicado(String nome, Long idExcecao) {
-<span class="fc" id="L68">        Optional&lt;Evento&gt; conflito = eventoRepository.findByNome(nome);</span>
-<span class="pc bpc" id="L69" title="3 of 6 branches missed.">        if (conflito.isPresent() &amp;&amp; (idExcecao == null || !conflito.get().getId().equals(idExcecao))) {</span>
-<span class="fc" id="L70">            throw new ValidacaoException(&quot;O nome '&quot; + nome + &quot;' já está em uso por outro evento.&quot;);</span>
+        // Cláusula de Guarda para verificação de existência
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        if (!eventoRepository.existsById(id)) {</span>
+<span class="fc" id="L80">             throw new RecursoNaoEncontradoException(&quot;Evento não encontrado para deletar.&quot;);</span>
         }
-<span class="fc" id="L72">    }</span>
+<span class="fc" id="L82">        eventoRepository.deleteById(id);</span>
+<span class="fc" id="L83">    }</span>
+
+    /*
+     * TP5 - Requisito 1: Refatoração
+     * &quot;Eliminar redundâncias e... otimizar trechos redundantes&quot;
+     * Método privado encapsulando a lógica de verificação de duplicidade.
+     */
+    private void validarNomeDuplicado(String nome, Long idExcecao) {
+<span class="fc" id="L91">        Optional&lt;Evento&gt; conflito = eventoRepository.findByNome(nome);</span>
+        
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        if (conflito.isPresent()) {</span>
+            // Lógica simplificada para verificar se o ID é diferente
+<span class="pc bpc" id="L95" title="1 of 4 branches missed.">            if (idExcecao == null || !conflito.get().getId().equals(idExcecao)) {</span>
+<span class="fc" id="L96">                throw new ValidacaoException(&quot;O nome '&quot; + nome + &quot;' já está em uso por outro evento.&quot;);</span>
+            }
+        }
+<span class="fc" id="L99">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
