@@ -28,28 +28,27 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      # --- INÍCIO SEGURANÇA (CODEQL) ---
+      # --- MUDANÇA PRINCIPAL: CODEQL ---
       - name: 🛡️ Inicializar CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: java
 
+      # Build acontece aqui
       - name: 🏗️ Build e Testes Unitários
         run: mvn clean verify
       
-      # Finaliza a análise de segurança
       - name: 🕵️‍♂️ Realizar Análise CodeQL
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:java"
+      # ---------------------------------
       
       - name: 📝 Gerar Log de Testes
         if: always()
         run: |
           echo "=== RESUMO DA EXECUÇÃO ===" > resumo_execucao.log
           echo "Data: $(date)" >> resumo_execucao.log
-          echo "Branch: ${{ github.ref }}" >> resumo_execucao.log
-          echo "Commit: ${{ github.sha }}" >> resumo_execucao.log
           cat resumo_execucao.log
 
       - name: 📤 Upload Relatório JaCoCo
@@ -68,8 +67,7 @@ jobs:
         run: |
           echo "### 🚀 Resultado do Build" >> $GITHUB_STEP_SUMMARY
           echo "✅ Testes executados com sucesso" >> $GITHUB_STEP_SUMMARY
-          echo "🛡️ Análise CodeQL concluída com sucesso" >> $GITHUB_STEP_SUMMARY
-          echo "📦 Artefatos arquivados" >> $GITHUB_STEP_SUMMARY
+          echo "🛡️ Análise CodeQL concluída" >> $GITHUB_STEP_SUMMARY
 
   # JOB 2: Deploy em Homologação
   deploy-homolog:
@@ -82,15 +80,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: app-jar
-
       - name: Simular Deploy
-        run: |
-          echo "Iniciando deploy em ambiente de TESTE..."
-          ls -l *.jar
-          echo "Aplicação implantada com sucesso em Homologação!"
-
-      - name: 🧪 Smoke Test (Pós-Deploy)
-        run: echo "Verificando se a aplicação responde (Health Check)... OK!"
+        run: echo "Aplicação implantada com sucesso em Homologação!"
+      - name: 🧪 Smoke Test
+        run: echo "Health Check OK!"
 
   # JOB 3: Deploy em Produção
   deploy-prod:
@@ -103,10 +96,5 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: app-jar
-
-      - name: Simular Deploy em Produção
-        run: |
-          echo "⚠️ ATENÇÃO: Deploy em PRODUÇÃO iniciado..."
-          echo "Conectando ao cluster seguro..."
-          echo "Transferindo artefatos..."
-          echo "✅ Deploy em Produção concluído com sucesso!"
+      - name: Simular Deploy
+        run: echo "✅ Deploy em Produção concluído!"
