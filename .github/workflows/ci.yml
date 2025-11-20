@@ -28,13 +28,13 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      # --- MUDANÇA PRINCIPAL: CODEQL ---
+      # --- CODEQL (Substitui o OWASP) ---
       - name: 🛡️ Inicializar CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: java
 
-      # Build acontece aqui
+      # O Maven agora roda LIMPO, sem tentar baixar o NVD
       - name: 🏗️ Build e Testes Unitários
         run: mvn clean verify
       
