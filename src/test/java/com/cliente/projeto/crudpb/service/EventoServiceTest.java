@@ -68,7 +68,7 @@ class EventoServiceTest {
         // Simulando o 'save' (apenas retornando o evento que foi passado)
         when(eventoRepository.save(any(Evento.class))).thenReturn(eventoNovo);
 
-        Evento eventoSalvo = eventoService.criarEvento(eventoNovo, usuarioId);
+        eventoService.criarEvento(eventoNovo, usuarioId);
 
         // 3. Verificação (Then)
         // O evento foi salvo

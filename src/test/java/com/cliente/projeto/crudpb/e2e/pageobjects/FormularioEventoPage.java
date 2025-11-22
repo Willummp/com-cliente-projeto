@@ -20,26 +20,26 @@ public class FormularioEventoPage {
     private By botaoSalvar = By.id("btn-salvar"); // (O seu HTML não tem este ID, vamos corrigir)
 
     /*
-    ==================== REATORAÇÃO (Req 4) ====================
-    Adicionando o seletor para o novo dropdown de usuário.
-    ============================================================
-    */
+     * ==================== REATORAÇÃO (Req 4) ====================
+     * Adicionando o seletor para o novo dropdown de usuário.
+     * ============================================================
+     */
     private By selectUsuario = By.id("usuarioId");
 
     /*
-    ==================== CORREÇÃO (Bug TP3) ====================
-    O seu PageObject procurava por "validation-errors", mas
-    o HTML de refatoração que fiz (e o seu teste de integração)
-    mostra os erros de DTO (como "O nome é obrigatório.")
-    embaixo de cada campo, com a classe 'text-danger'.
-    
-    Para o teste E2E, vamos padronizar e procurar pela
-    mensagem de erro de *regra de negócio* (ex: nome duplicado),
-    que aparece no 'alert-danger'.
-    ============================================================
-    */
-    private By containerMensagemErro = By.className("alert-danger"); // Buscando pelo Alerta de Erro
-
+     * ==================== CORREÇÃO (Bug TP3) ====================
+     * O seu PageObject procurava por "validation-errors", mas
+     * o HTML de refatoração que fiz (e o seu teste de integração)
+     * mostra os erros de DTO (como "O nome é obrigatório.")
+     * embaixo de cada campo, com a classe 'text-danger'.
+     * 
+     * Para o teste E2E, vamos padronizar e procurar pela
+     * mensagem de erro de *regra de negócio* (ex: nome duplicado),
+     * que aparece no 'alert-danger'.
+     * ============================================================
+     */
+    private By containerMensagemErro = By.cssSelector(".alert-danger, .text-danger"); // Busca por Alerta Global OU Erro
+                                                                                      // de Campo
 
     public FormularioEventoPage(WebDriver driver) {
         this.driver = driver;
@@ -47,11 +47,11 @@ public class FormularioEventoPage {
     }
 
     /*
-    ==================== REATORAÇÃO (Req 4) ====================
-    O método de preenchimento foi atualizado para
-    incluir o preenchimento do novo campo de usuário.
-    ============================================================
-    */
+     * ==================== REATORAÇÃO (Req 4) ====================
+     * O método de preenchimento foi atualizado para
+     * incluir o preenchimento do novo campo de usuário.
+     * ============================================================
+     */
     public void preencherFormulario(String nome, String descricao, Long usuarioId) {
         driver.findElement(campoNome).clear();
         driver.findElement(campoNome).sendKeys(nome);
