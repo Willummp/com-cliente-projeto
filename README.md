@@ -376,38 +376,50 @@ public class EventoService {
 - ✅ Manter cobertura ≥ 90%
 - ✅ Sem vulnerabilidades críticas
 
----
+## 📋 Mapeamento de Requisitos e Implementação (Rastreabilidade)
 
-## 📄 Licença
+Este projeto foi desenvolvido incrementalmente através de TPs (Trabalhos Práticos). Abaixo, o mapeamento de como cada requisito foi atendido.
 
-Este projeto é parte de um trabalho acadêmico e está disponível para fins educacionais.
+### 📘 TP3: Teste de Performance e Sistema CRUD
 
----
+| ID | Requisito | Status | Implementação / Evidência |
+| :--- | :--- | :--- | :--- |
+| **TP3.1** | **Sistema CRUD Web**<br>Backend Java + Interface (Criar, Ler, Atualizar, Deletar). | ✅ Atendido | • Controllers: `UsuarioController`, `EventoController`<br>• Pages: `lista-eventos.html`, `form-evento.html` |
+| **TP3.2** | **Testes E2E (Selenium)**<br>Interação com formulários, tabelas, botões e alertas. | ✅ Atendido | • `CadastroEventoE2ETest.java`<br>• `FluxoEventosE2ETest.java`<br>• Page Objects: `FormularioEventoPage`, `ListaEventosPage` |
+| **TP3.3** | **Testes Parametrizados**<br>Validar diferentes cenários e entradas. | ✅ Atendido | • `EventoServiceTest.java` (Cenários de sucesso e falha)<br>• `UsuarioControllerTest.java` |
+| **TP3.4** | **Simulação de Falhas**<br>Timeouts, entradas inválidas, fail early/gracefully. | ✅ Atendido | • `GlobalExceptionHandler.java` (Tratamento robusto)<br>• Validações Bean Validation (`@NotNull`, `@Size`)<br>• Testes de Timeout em E2E corrigidos. |
+| **TP3.5** | **Qualidade de Código**<br>Modularidade, Clean Code, Coesão. | ✅ Atendido | • Arquitetura em Camadas (Controller, Service, Repository)<br>• DTOs para desacoplamento (`EventoDTO`, `UsuarioDTO`) |
+| **TP3.6** | **Cobertura de Testes**<br>Mínimo de 85%. | ✅ Atendido | • Cobertura atual: **>90%** (Verificado via JaCoCo) |
+| **TP3.7** | **Mensagens de Erro**<br>Feedback claro e seguro na interface. | ✅ Atendido | • Exibição de erros de validação nos formulários (Thymeleaf)<br>• Alertas de sucesso/erro (`alert-success`, `alert-danger`) |
 
-## 👨‍💻 Autor
+### 📘 TP4: Integração, Refatoração e CI/CD
 
-**Seu Nome**  
-📧 Email: seu.email@exemplo.com  
-🎓 Instituição: [Nome da Universidade]
+| ID | Requisito | Status | Implementação / Evidência |
+| :--- | :--- | :--- | :--- |
+| **TP4.1** | **Refatoração e Clean Code**<br>SRP, eliminação de duplicidade, nomes claros. | ✅ Atendido | • Refatoração de `EventoService` (Separação Leitura/Escrita)<br>• Uso de DTOs (`EventoDTO`) para não expor entidades.<br>• `GlobalExceptionHandler` para centralizar erros. |
+| **TP4.2** | **Integração dos Sistemas**<br>Conectar os dois sistemas (Usuário e Evento). | ✅ Atendido | • Relacionamento `@ManyToOne` entre `Evento` e `Usuario`.<br>• `FormularioEventoPage` permite selecionar Usuário criador.<br>• Validação de integridade referencial. |
+| **TP4.3** | **GitHub Actions (CI/CD)**<br>Build, Testes, Triggers (push, PR). | ✅ Atendido | • Workflow `.github/workflows/ci.yml`<br>• Jobs: `security-build-test`, `deploy-homolog`, `testes-e2e`, `deploy-prod`.<br>• Triggers configurados para `push` e `workflow_dispatch`. |
+| **TP4.4** | **Refatoração Guiada por Testes**<br>Manter comportamento e cobertura > 85%. | ✅ Atendido | • Testes de Regressão garantiram que refatorações não quebraram funcionalidades.<br>• Cobertura mantida acima de 90%. |
+| **TP4.5** | **Runners e Ambiente**<br>Configuração de ambiente e dependências. | ✅ Atendido | • Uso de `ubuntu-latest`.<br>• Setup de Java 17 e Cache de Maven no workflow. |
 
----
+### 📘 TP5: Finalização e Automação de Deploy
 
-## 📚 Referências Técnicas
+| ID | Requisito | Status | Implementação / Evidência |
+| :--- | :--- | :--- | :--- |
+| **TP5.1** | **Refatoração Final**<br>Imutabilidade, Polimorfismo, Clean Code. | ✅ Atendido | • Uso de Records/DTOs imutáveis.<br>• Interfaces para serviços.<br>• Código limpo e organizado. |
+| **TP5.2** | **Automação de Deploy**<br>Pipeline completo com proteção de ambientes. | ✅ Atendido | • Job `deploy-prod` depende de `testes-e2e`.<br>• Uso de Environments no GitHub Actions (Homolog/Prod). |
+| **TP5.3** | **Testes Pós-Deploy**<br>Validar integridade em produção com Selenium. | ✅ Atendido | • Job `testes-e2e-pos-deploy` roda após deploy em homologação.<br>• Verifica se a aplicação está respondendo e funcional. |
+| **TP5.4** | **Monitoramento e Logs**<br>Logs personalizados e Badges. | ✅ Atendido | • Badges no README.<br>• Logs de execução nos steps do GitHub Actions.<br>• Relatório de testes (Surefire/JaCoCo) visível. |
+| **TP5.5** | **Cobertura de Testes (90%)**<br>Aumento da exigência de cobertura. | ✅ Atendido | • Regra do JaCoCo configurada para **0.90** (90%).<br>• Build falha se cobertura for menor. |
+| **TP5.6** | **Formalização da Entrega**<br>Documentação completa e arquitetura. | ✅ Atendido | • `README.md` completo com arquitetura e instruções.<br>• `relatorio_entrega.md` detalhando o projeto. |
 
-- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
-- [Selenium WebDriver](https://www.selenium.dev/documentation/)
-- [JaCoCo Code Coverage](https://www.jacoco.org/jacoco/)
-- [GitHub Actions](https://docs.github.com/en/actions)
-- [Clean Code - Robert C. Martin](https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882)
+### 📘 Assessment Final (AT): Entrega de Projeto
 
----
+| ID | Requisito | Status | Implementação / Evidência |
+| :--- | :--- | :--- | :--- |
+| **AT.1** | **Refinamento e Clean Code**<br>Modularidade, Imutabilidade, Leitura/Escrita. | ✅ Atendido | • Código revisado e refatorado.<br>• Princípios SOLID aplicados em todo o projeto. |
+| **AT.2** | **Automação Completa CI/CD**<br>Build, Testes, Segurança, Deploy Multi-ambiente. | ✅ Atendido | • Pipeline robusto cobrindo todo o ciclo de vida.<br>• Análise de segurança (CodeQL) integrada. |
+| **AT.3** | **Testes Pós-Deploy**<br>Validação em Produção com Selenium. | ✅ Atendido | • Testes E2E executados contra o ambiente de homologação/produção no pipeline. |
+| **AT.4** | **Monitoramento e Logs**<br>Logs de workflow, Badges, Rastreabilidade. | ✅ Atendido | • Logs detalhados no GitHub Actions.<br>• Badges de status no README.<br>• Relatórios de execução. |
+| **AT.5** | **Documentação Final**<br>Arquitetura, Workflows, Guia de Execução. | ✅ Atendido | • `README.md` serve como documentação central.<br>• `relatorio_entrega.md` detalha o cumprimento dos requisitos. |
 
-## 🎉 Agradecimentos
-
-- Professor(a) orientador(a)
-- Colegas de turma
-- Comunidade Spring Boot
-
----
-
-**Desenvolvido com ❤️ usando Spring Boot, Thymeleaf e boas práticas de engenharia de software.**
