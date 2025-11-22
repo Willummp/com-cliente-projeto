@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class) // Habilita o Mockito
 class EventoServiceTest {
 
-    @Mock 
+    @Mock
     private EventoRepository eventoRepository;
 
     @Mock
@@ -64,7 +64,7 @@ class EventoServiceTest {
 
         // Simulando a busca do usuário (Integração)
         when(usuarioService.buscarPorId(usuarioId)).thenReturn(usuarioCriador);
-        
+
         // Simulando o 'save' (apenas retornando o evento que foi passado)
         when(eventoRepository.save(any(Evento.class))).thenReturn(eventoNovo);
 
@@ -72,4 +72,94 @@ class EventoServiceTest {
 
         // 3. Verificação (Then)
         // O evento foi salvo
-        verify(eventoRepository, times(1)).save(eventoNovo);}}
+        verify(eventoRepository, times(1)).save(eventoNovo);
+    }
+
+    @Test
+    void deveListarTodosOsEventos() {
+        eventoService.listarTodos();
+        verify(eventoRepository).findAll();
+    }
+
+    @Test
+    void deveBuscarPorId_ComSucesso() {
+        Evento evento = new Evento("Evento", "Desc");
+        when(eventoRepository.findById(1L)).thenReturn(Optional.of(evento));
+
+        Evento resultado = eventoService.buscarPorId(1L);
+        assertEquals(evento, resultado);
+    }
+
+    @Test
+    void deveLancarExcecao_QuandoBuscarPorIdNaoExistente() {
+        when(eventoRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(RecursoNaoEncontradoException.class, () -> eventoService.buscarPorId(1L));
+    }
+
+    @Test
+    void deveAtualizarEvento_ComSucesso() {
+        Long id = 1L;
+        Long usuarioId = 2L;
+        Evento eventoAtualizado = new Evento("Novo Nome", "Nova Desc");
+        Evento eventoExistente = new Evento("Antigo Nome", "Antiga Desc");
+        eventoExistente.setId(id);
+        Usuario usuario = new Usuario("User", "email");
+
+        when(eventoRepository.findByNome("Novo Nome")).thenReturn(Optional.empty());
+        when(eventoRepository.findById(id)).thenReturn(Optional.of(eventoExistente));
+        when(usuarioService.buscarPorId(usuarioId)).thenReturn(usuario);
+        when(eventoRepository.save(any(Evento.class))).thenAnswer(i -> i.getArgument(0));
+
+        Evento resultado = eventoService.atualizarEvento(id, eventoAtualizado, usuarioId);
+
+        assertEquals("Novo Nome", resultado.getNome());
+        assertEquals("Nova Desc", resultado.getDescricao());
+        assertEquals(usuario, resultado.getUsuario());
+    }
+
+    @Test
+    void deveLancarExcecao_QuandoAtualizarComNomeDuplicadoDeOutroEvento() {
+        Long id = 1L;
+        Evento eventoAtualizado = new Evento("Nome Duplicado", "Desc");
+        Evento outroEvento = new Evento("Nome Duplicado", "Desc");
+        outroEvento.setId(2L); // ID diferente
+
+        when(eventoRepository.findByNome("Nome Duplicado")).thenReturn(Optional.of(outroEvento));
+
+        assertThrows(ValidacaoException.class, () -> eventoService.atualizarEvento(id, eventoAtualizado, 1L));
+    }
+
+    @Test
+    void devePermitirAtualizar_ComMesmoNomeDoProprioEvento() {
+        Long id = 1L;
+        Long usuarioId = 2L;
+        Evento eventoAtualizado = new Evento("Mesmo Nome", "Desc");
+        Evento eventoExistente = new Evento("Mesmo Nome", "Desc");
+        eventoExistente.setId(id);
+        Usuario usuario = new Usuario("User", "email");
+
+        when(eventoRepository.findByNome("Mesmo Nome")).thenReturn(Optional.of(eventoExistente));
+        when(eventoRepository.findById(id)).thenReturn(Optional.of(eventoExistente));
+        when(usuarioService.buscarPorId(usuarioId)).thenReturn(usuario);
+        when(eventoRepository.save(any(Evento.class))).thenAnswer(i -> i.getArgument(0));
+
+        assertDoesNotThrow(() -> eventoService.atualizarEvento(id, eventoAtualizado, usuarioId));
+    }
+
+    @Test
+    void deveDeletarEvento_ComSucesso() {
+        when(eventoRepository.existsById(1L)).thenReturn(true);
+
+        eventoService.deletarEvento(1L);
+
+        verify(eventoRepository).deleteById(1L);
+    }
+
+    @Test
+    void deveLancarExcecao_QuandoDeletarEventoInexistente() {
+        when(eventoRepository.existsById(1L)).thenReturn(false);
+
+        assertThrows(RecursoNaoEncontradoException.class, () -> eventoService.deletarEvento(1L));
+    }
+}

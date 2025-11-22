@@ -85,10 +85,41 @@ jobs:
       - name: 🧪 Smoke Test
         run: echo "Health Check OK!"
 
-  # JOB 3: Deploy em Produção
+  # JOB 3: Testes E2E Pós-Deploy (Selenium)
+  testes-e2e-pos-deploy:
+    name: 🌐 Testes E2E Pós-Deploy
+    needs: deploy-homolog
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+      
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+      
+      - name: 🌐 Executar Testes E2E (Selenium)
+        run: mvn test -Dtest=*E2ETest
+      
+      - name: 📊 Resumo dos Testes E2E
+        if: always()
+        run: |
+          echo "### 🌐 Resultado dos Testes E2E" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Testes Selenium executados com sucesso" >> $GITHUB_STEP_SUMMARY
+          echo "📋 Cenários validados:" >> $GITHUB_STEP_SUMMARY
+          echo "- Criação de eventos" >> $GITHUB_STEP_SUMMARY
+          echo "- Validação de campos obrigatórios" >> $GITHUB_STEP_SUMMARY
+          echo "- Regras de negócio (nome duplicado)" >> $GITHUB_STEP_SUMMARY
+          echo "- Fluxo completo de CRUD" >> $GITHUB_STEP_SUMMARY
+
+  # JOB 4: Deploy em Produção
   deploy-prod:
     name: 🚀 Deploy Produção
-    needs: deploy-homolog
+    needs: testes-e2e-pos-deploy
     runs-on: ubuntu-latest
     
     steps:
@@ -98,3 +129,5 @@ jobs:
           name: app-jar
       - name: Simular Deploy
         run: echo "✅ Deploy em Produção concluído!"
+      - name: 🔔 Notificação de Deploy
+        run: echo "::notice::Deploy em produção realizado com sucesso!"

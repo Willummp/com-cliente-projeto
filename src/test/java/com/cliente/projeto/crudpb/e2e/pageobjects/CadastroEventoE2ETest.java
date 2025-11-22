@@ -1,6 +1,5 @@
 package com.cliente.projeto.crudpb.e2e.pageobjects;
 
-import com.cliente.projeto.crudpb.e2e.pageobjects.FormularioEventoPage;
 import com.cliente.projeto.crudpb.model.Usuario;
 import com.cliente.projeto.crudpb.service.UsuarioService;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -8,17 +7,19 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Disabled;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Disabled
+/**
+ * AT - Requisito 3: Testes Pós-Deploy e Validação em Produção
+ * Testes E2E com Selenium validando a interface web de eventos.
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CadastroEventoE2ETest {
 
@@ -32,7 +33,6 @@ public class CadastroEventoE2ETest {
     @Autowired
     private UsuarioService usuarioService;
 
-    // Variável para guardar o ID do usuário de teste
     private Long usuarioTesteId;
 
     @BeforeAll
@@ -52,6 +52,9 @@ public class CadastroEventoE2ETest {
 
         // Configuração do Selenium
         ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); // Executar sem interface gráfica (CI/CD)
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
         driver = new ChromeDriver(options);
 
         baseUrl = "http://localhost:" + port;
@@ -66,8 +69,8 @@ public class CadastroEventoE2ETest {
     }
 
     /**
-     * Teste de Interface (Artefato 2)
-     * Valida o feedback de erro seguro na UI (Artefato 4)
+     * AT - Requisito 3: Validação pós-deploy
+     * Teste de Interface validando feedback de erro seguro na UI
      */
     @Test
     void deveMostrarMensagemDeErro_QuandoSubmeterFormularioComNomeVazio() {
@@ -76,23 +79,50 @@ public class CadastroEventoE2ETest {
         formularioPage.preencherFormulario("", "Descrição válida", this.usuarioTesteId);
         formularioPage.submeter();
 
-        // Verificação
+        // Verificação: mensagem de validação deve aparecer
         String mensagemErroNomeVazio = formularioPage.getMensagemDeErroVisivel();
+        assertTrue(mensagemErroNomeVazio.contains("obrigatório") || mensagemErroNomeVazio.contains("requer"),
+                "A mensagem de erro de nome vazio não foi encontrada.");
+    }
 
-        
+    /**
+     * AT - Requisito 3: Testes pós-deploy validando regras de negócio
+     */
+    @Test
+    void deveMostrarErro_QuandoTentarCriarEventoComNomeDuplicado() {
         // 1. Cria o primeiro evento (válido)
-        formularioPage.preencherFormulario("Evento Duplicado E2E", "Desc 1", this.usuarioTesteId);
-        formularioPage.submeter();
-        
-        // 2. Tenta criar o segundo evento (inválido)
         driver.get(baseUrl + "/eventos/novo");
-        formularioPage.preencherFormulario("Evento Duplicado E2E", "Desc 2", this.usuarioTesteId);
+        formularioPage.preencherFormulario("Evento Duplicado E2E", "Descrição 1", this.usuarioTesteId);
         formularioPage.submeter();
-        
-        // 3. Verificação (espera o erro de negócio)
+
+        // Aguarda redirecionamento para lista
+        assertTrue(driver.getCurrentUrl().contains("/eventos"),
+                "Deveria ter redirecionado para a lista de eventos");
+
+        // 2. Tenta criar o segundo evento com mesmo nome (inválido)
+        driver.get(baseUrl + "/eventos/novo");
+        formularioPage.preencherFormulario("Evento Duplicado E2E", "Descrição 2", this.usuarioTesteId);
+        formularioPage.submeter();
+
+        // 3. Verificação: espera o erro de negócio
         String mensagemErroDuplicado = formularioPage.getMensagemDeErroVisivel();
-        
-        assertTrue(mensagemErroDuplicado.contains("já está em uso por outro evento"),
-                "A mensagem de erro de nome duplicado não foi encontrada.");
+        assertTrue(mensagemErroDuplicado.contains("já está em uso"),
+                "A mensagem de erro de nome duplicado não foi encontrada. Mensagem real: " + mensagemErroDuplicado);
+    }
+
+    /**
+     * AT - Requisito 3: Validação de sucesso na criação
+     */
+    @Test
+    void deveCriarEventoComSucesso() {
+        driver.get(baseUrl + "/eventos/novo");
+
+        String nomeEvento = "Evento E2E " + System.currentTimeMillis(); // Nome único
+        formularioPage.preencherFormulario(nomeEvento, "Descrição do evento E2E", this.usuarioTesteId);
+        formularioPage.submeter();
+
+        // Verificação: deve redirecionar para lista
+        assertTrue(driver.getCurrentUrl().contains("/eventos"),
+                "Deveria ter redirecionado para /eventos após criar");
     }
 }
