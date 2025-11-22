@@ -1,5 +1,7 @@
 # 🎯 Sistema de Gerenciamento de Eventos - AT (Assessment Final)
 
+
+[![Pipeline CI/CD Completo (TP5)](https://github.com/Willummp/com-cliente-projeto/actions/workflows/ci.yml/badge.svg)](https://github.com/Willummp/com-cliente-projeto/actions/workflows/ci.yml)
 ![CI/CD Pipeline](https://github.com/Willummp/com-cliente-projeto/actions/workflows/ci.yml/badge.svg)
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.7-green)
