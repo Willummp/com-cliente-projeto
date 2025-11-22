@@ -29,6 +29,13 @@ public class ListaEventosPage {
   }
 
   public int contarEventos() {
+    // Espera a tabela estar visível antes de contar
+    try {
+      wait.until(ExpectedConditions.visibilityOfElementLocated(tabelaEventos));
+    } catch (Exception e) {
+      // Se der timeout (tabela vazia), retorna 0
+      return 0;
+    }
     List<WebElement> linhas = driver.findElements(tabelaEventos);
     return linhas.size();
   }
