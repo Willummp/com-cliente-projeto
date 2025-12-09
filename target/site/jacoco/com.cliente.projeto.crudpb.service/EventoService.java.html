@@ -17,7 +17,7 @@ public class EventoService {
 
 <span class="fc" id="L18">    public EventoService(EventoRepository eventoRepository, UsuarioService usuarioService) {</span>
 <span class="fc" id="L19">        this.eventoRepository = eventoRepository;</span>
-<span class="fc" id="L20">        this.usuarioService = usuarioService; </span>
+<span class="fc" id="L20">        this.usuarioService = usuarioService;</span>
 <span class="fc" id="L21">    }</span>
 
     public List&lt;Evento&gt; listarTodos() {
@@ -47,7 +47,7 @@ public class EventoService {
 
         // 2. Validação de nome duplicado (ignorando o próprio ID)
 <span class="nc" id="L49">        validarNomeDuplicado(eventoAtualizado.getNome(), id);</span>
-        
+
         // 3. Busca e associa o novo usuário (ou o mesmo)
 <span class="nc" id="L52">        Usuario criador = usuarioService.buscarPorId(usuarioId);</span>
 <span class="nc" id="L53">        eventoExistente.setUsuario(criador);</span>
@@ -63,7 +63,7 @@ public class EventoService {
 <span class="nc" id="L63">        Evento eventoParaDeletar = buscarPorId(id);</span>
 <span class="nc" id="L64">        eventoRepository.delete(eventoParaDeletar);</span>
 <span class="nc" id="L65">    }</span>
-    
+
     private void validarNomeDuplicado(String nome, Long idExcecao) {
 <span class="fc" id="L68">        Optional&lt;Evento&gt; conflito = eventoRepository.findByNome(nome);</span>
 <span class="pc bpc" id="L69" title="3 of 6 branches missed.">        if (conflito.isPresent() &amp;&amp; (idExcecao == null || !conflito.get().getId().equals(idExcecao))) {</span>

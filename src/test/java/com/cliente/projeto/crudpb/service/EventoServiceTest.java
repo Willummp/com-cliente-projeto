@@ -18,10 +18,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class) // Habilita o Mockito
+@ExtendWith(MockitoExtension.class)
 class EventoServiceTest {
 
-    @Mock 
+    @Mock
     private EventoRepository eventoRepository;
 
     @Mock
@@ -64,7 +64,7 @@ class EventoServiceTest {
 
         // Simulando a busca do usuário (Integração)
         when(usuarioService.buscarPorId(usuarioId)).thenReturn(usuarioCriador);
-        
+
         // Simulando o 'save' (apenas retornando o evento que foi passado)
         when(eventoRepository.save(any(Evento.class))).thenReturn(eventoNovo);
 
@@ -72,4 +72,6 @@ class EventoServiceTest {
 
         // 3. Verificação (Then)
         // O evento foi salvo
-        verify(eventoRepository, times(1)).save(eventoNovo);}}
+        verify(eventoRepository, times(1)).save(eventoNovo);
+    }
+}

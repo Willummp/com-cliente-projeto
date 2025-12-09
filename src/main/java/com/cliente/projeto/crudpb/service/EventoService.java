@@ -17,7 +17,7 @@ public class EventoService {
 
     public EventoService(EventoRepository eventoRepository, UsuarioService usuarioService) {
         this.eventoRepository = eventoRepository;
-        this.usuarioService = usuarioService; 
+        this.usuarioService = usuarioService;
     }
 
     public List<Evento> listarTodos() {
@@ -47,7 +47,7 @@ public class EventoService {
 
         // 2. Validação de nome duplicado (ignorando o próprio ID)
         validarNomeDuplicado(eventoAtualizado.getNome(), id);
-        
+
         // 3. Busca e associa o novo usuário (ou o mesmo)
         Usuario criador = usuarioService.buscarPorId(usuarioId);
         eventoExistente.setUsuario(criador);
@@ -63,7 +63,7 @@ public class EventoService {
         Evento eventoParaDeletar = buscarPorId(id);
         eventoRepository.delete(eventoParaDeletar);
     }
-    
+
     private void validarNomeDuplicado(String nome, Long idExcecao) {
         Optional<Evento> conflito = eventoRepository.findByNome(nome);
         if (conflito.isPresent() && (idExcecao == null || !conflito.get().getId().equals(idExcecao))) {

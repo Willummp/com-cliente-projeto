@@ -8,17 +8,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Disabled;
+// import org.junit.jupiter.api.Disabled;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.springframework.beans.factory.annotation.Autowired; 
+// import org.openqa.selenium.chrome.ChromeDriver;
+// import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CadastroEventoE2ETest {
 
@@ -37,7 +38,7 @@ public class CadastroEventoE2ETest {
 
     @BeforeAll
     static void setupClass() {
-        WebDriverManager.chromedriver().setup();
+        WebDriverManager.firefoxdriver().setup();
     }
 
     @BeforeEach
@@ -51,8 +52,9 @@ public class CadastroEventoE2ETest {
         }
 
         // Configuração do Selenium
-        ChromeOptions options = new ChromeOptions();
-        driver = new ChromeDriver(options);
+        org.openqa.selenium.firefox.FirefoxOptions options = new org.openqa.selenium.firefox.FirefoxOptions();
+        options.addArguments("--headless");
+        driver = new org.openqa.selenium.firefox.FirefoxDriver(options);
 
         baseUrl = "http://localhost:" + port;
         formularioPage = new FormularioEventoPage(driver);
@@ -79,19 +81,18 @@ public class CadastroEventoE2ETest {
         // Verificação
         String mensagemErroNomeVazio = formularioPage.getMensagemDeErroVisivel();
 
-        
         // 1. Cria o primeiro evento (válido)
         formularioPage.preencherFormulario("Evento Duplicado E2E", "Desc 1", this.usuarioTesteId);
         formularioPage.submeter();
-        
+
         // 2. Tenta criar o segundo evento (inválido)
         driver.get(baseUrl + "/eventos/novo");
         formularioPage.preencherFormulario("Evento Duplicado E2E", "Desc 2", this.usuarioTesteId);
         formularioPage.submeter();
-        
+
         // 3. Verificação (espera o erro de negócio)
         String mensagemErroDuplicado = formularioPage.getMensagemDeErroVisivel();
-        
+
         assertTrue(mensagemErroDuplicado.contains("já está em uso por outro evento"),
                 "A mensagem de erro de nome duplicado não foi encontrada.");
     }

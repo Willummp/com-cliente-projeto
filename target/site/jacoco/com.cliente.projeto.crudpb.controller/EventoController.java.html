@@ -33,10 +33,10 @@ public class EventoController {
     @GetMapping(&quot;/novo&quot;)
     public String mostrarFormularioNovo(Model model) {
         // Passa o DTO vazio e a lista de usuários para o dropdown
-<span class="nc" id="L36">        model.addAttribute(&quot;eventoDTO&quot;, new EventoDTO(&quot;&quot;, &quot;&quot;, null));</span>
-<span class="nc" id="L37">        model.addAttribute(&quot;todosUsuarios&quot;, usuarioService.listarTodos()); // INTEGRAÇÃO</span>
-<span class="nc" id="L38">        model.addAttribute(&quot;pageTitle&quot;, &quot;Novo Evento&quot;);</span>
-<span class="nc" id="L39">        return &quot;form-evento&quot;; // Renderiza 'form-evento.html'</span>
+<span class="fc" id="L36">        model.addAttribute(&quot;eventoDTO&quot;, new EventoDTO(&quot;&quot;, &quot;&quot;, null));</span>
+<span class="fc" id="L37">        model.addAttribute(&quot;todosUsuarios&quot;, usuarioService.listarTodos()); // INTEGRAÇÃO</span>
+<span class="fc" id="L38">        model.addAttribute(&quot;pageTitle&quot;, &quot;Novo Evento&quot;);</span>
+<span class="fc" id="L39">        return &quot;form-evento&quot;; // Renderiza 'form-evento.html'</span>
     }
 
     @PostMapping
